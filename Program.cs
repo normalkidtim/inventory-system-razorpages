@@ -7,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages(options => 
 {
-    // Authorization: Requires a logged-in user for all core inventory pages
-    options.Conventions.AuthorizePage("/Index");
+    // FIX: Explicitly set /Dashboard as the default root page (/)
+    options.Conventions.AddPageRoute("/Dashboard", "/");
+
+    // Authorization: Requires a logged-in user for all core inventory pages.
     options.Conventions.AuthorizePage("/Dashboard");
     options.Conventions.AuthorizePage("/Create");
     options.Conventions.AuthorizePage("/Edit");
@@ -21,7 +23,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 // --- 2. Configure ASP.NET Identity ---
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+// UPDATED: Use the custom ApplicationUser model
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();

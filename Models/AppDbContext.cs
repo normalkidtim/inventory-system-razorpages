@@ -1,11 +1,12 @@
+// File: Models/AppDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 namespace InventoryRazorApp.Models
 {
-    // Inherits from IdentityDbContext to include all user/role tables
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    // UPDATED: Inherits from IdentityDbContext and uses the custom ApplicationUser model
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

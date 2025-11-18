@@ -55,7 +55,7 @@ namespace InventoryRazorApp.Pages
                 TempData["SuccessMessage"] = $"Item '{Item.Name}' deleted successfully!";
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Dashboard");
         }
     }
 }

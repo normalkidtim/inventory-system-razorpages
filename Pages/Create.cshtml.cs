@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using InventoryRazorApp.Models;
+using Microsoft.AspNetCore.Hosting; // Needed for IWebHostEnvironment
+using System.IO; // Needed for Path and FileStream
 
 namespace InventoryRazorApp.Pages
 {
@@ -49,7 +51,8 @@ namespace InventoryRazorApp.Pages
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = $"Item '{Item.Name}' added successfully!";
-            return RedirectToPage("./Index"); 
+            // Changed redirect from Index to Dashboard as Index page is being removed.
+            return RedirectToPage("./Dashboard"); 
         }
     }
 }

@@ -1,6 +1,5 @@
 @page
 @model InventoryRazorApp.Pages.EditModel
-
 @{
     ViewData["Title"] = "Edit Item";
 }
@@ -14,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <input type="hidden" asp-for="Item.Id" />
-            <input type="hidden" asp-for="OldPhotoPath" />
+            <input type="hidden" asp-for="Item.PhotoPath" />
 
             <div class="mb-3">
                 <label asp-for="Item.Name" class="form-label"></label>
@@ -34,22 +33,17 @@
                 <span asp-validation-for="Item.Category" class="text-danger"></span>
             </div>
 
-            @if (!string.IsNullOrEmpty(Model.Item.PhotoPath))
-            {
-                <div class="mb-3">
-                    <label class="form-label">Current Photo:</label><br />
-                    <img src="@Model.Item.PhotoPath" alt="Current Photo" style="width: 100px; height: 100px; object-fit: cover;" />
-                </div>
-            }
-
             <div class="mb-3">
-                <label asp-for="Item.PhotoFile" class="form-label">Upload New Photo (Optional)</label>
+                <label asp-for="Item.PhotoFile" class="form-label">
+                    Change Photo (Current: @(string.IsNullOrEmpty(Model.Item.PhotoPath) ? "None" : "Exists"))
+                </label>
                 <input asp-for="Item.PhotoFile" class="form-control" type="file" />
                 <span asp-validation-for="Item.PhotoFile" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-success">💾 Save Changes</button>
-            <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+            <a asp-page="./Dashboard" class="btn btn-secondary">Cancel</a>
+            <a asp-page="./Delete" asp-route-id="@Model.Item.Id" class="btn btn-danger float-end">🗑️ Delete Item</a>
         </form>
     </div>
 </div>
