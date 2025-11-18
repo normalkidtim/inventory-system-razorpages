@@ -1,52 +1,169 @@
 @page
 @model InventoryRazorApp.Pages.DashboardModel
 @{
-    ViewData[index: "Title"] = "Inventory Dashboard";
+    ViewData["Title"] = "Inventory Dashboard";
 }
 
-<h1>Inventory Dashboard</h1>
-<p class="lead">View items categorized for a quick overview.</p>
-<hr />
+<div class="container py-4">
 
-@if (Model.GroupedItems.Count == 0)
-{
-    <div class="alert alert-warning" role="alert">
-        No items found in the inventory. Please add some items first!
-        <a asp-page="Create" class="alert-link">Add New Item</a>
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="fw-bold text-dark">📦 Inventory Dashboard</h1>
+        <a asp-page="Create" class="btn btn-primary btn-lg">
+            ➕ Add New Item
+        </a>
     </div>
-}
-else
-{
-    @foreach (var categoryGroup in Model.GroupedItems.OrderBy(g => g.Key))
+
+    <p class="lead text-muted">A categorized overview of your inventory items.</p>
+    <hr />
+
+    <!-- EMPTY STATE -->
+    @if (Model.GroupedItems.Count == 0)
     {
-        <h3 class="mt-4 mb-3 text-primary">@categoryGroup.Key (@categoryGroup.Value.Count items)</h3>
-        <div class="row mb-5">
-            @foreach (var item in categoryGroup.Value.OrderBy(i => i.Name))
-            {
-                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        @if (!string.IsNullOrEmpty(item.PhotoPath))
-                        {
-                            <img src="@item.PhotoPath" class="card-img-top" alt="@item.Name" style="height: 150px; object-fit: cover;">
-                        }
-                        else
-                        {
-                            <div class="card-img-top text-center bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
-                                <span>🖼️ No Photo</span>
+        <div class="empty-state">
+            <h5 class="fw-bold">No items found in the inventory.</h5>
+            <p class="mb-2">Start adding items to populate your dashboard.</p>
+           
+        </div>
+    }
+    else
+    {
+        <!-- CATEGORY SECTIONS -->
+        @foreach (var categoryGroup in Model.GroupedItems.OrderBy(g => g.Key))
+        {
+            <h3 class="category-title text-primary">
+                🗂️ @categoryGroup.Key 
+                <span class="text-muted fs-6">(@categoryGroup.Value.Count items)</span>
+            </h3>
+
+            <div class="row mt-3 mb-5">
+                @foreach (var item in categoryGroup.Value.OrderBy(i => i.Name))
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                        <div class="card inv-card h-100">
+
+                            <!-- Photo -->
+                            @if (!string.IsNullOrEmpty(item.PhotoPath))
+                            {
+                                <img src="@item.PhotoPath"
+                                     class="inv-img"
+                                     alt="@item.Name" />
+                            }
+                            else
+                            {
+                                <div class="inv-img-placeholder d-flex justify-content-center align-items-center">
+                                    🖼️ No Photo
+                                </div>
+                            }
+
+                            <!-- Details -->
+                            <div class="card-body">
+                                <div class="inv-title">@item.Name</div>
+                                <div class="inv-price">$@item.Price</div>
+                                <p class="text-muted small mb-0">ID: #@item.Id</p>
                             </div>
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Name</h5>
-                            <p class="card-text text-success fw-bold fs-5">$@item.Price</p>
-                            <p class="card-text"><small class="text-muted">ID: #@item.Id</small></p>
-                        </div>
-                        <div class="card-footer bg-white border-top-0">
-                            <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info w-100">Edit Details</a>
+
+                            <!-- Footer Button -->
+                            <div class="card-footer bg-white border-0">
+                                <a asp-page="./Edit" asp-route-id="@item.Id"
+                                   class="btn btn-info w-100 btn-sm inv-edit-btn">
+                                    ✏️ Edit Details
+                                </a>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-            }
-        </div>
-        <hr />
+                }
+            </div>
+
+            <hr />
+        }
     }
-}
+</div>
+
+
+<!-- ===================== CSS DESIGN ===================== -->
+<style>
+    /* ===== GENERAL PAGE ===== */
+    body {
+        background: #f8f9fc !important;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1, h3 {
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== CATEGORY TITLE ===== */
+    .category-title {
+        border-left: 5px solid #0d6efd;
+        padding-left: 12px;
+        margin-top: 35px;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    /* ===== INVENTORY CARD ===== */
+    .inv-card {
+        border: none !important;
+        border-radius: 12px !important;
+        overflow: hidden;
+        background: white;
+        transition: 0.3s ease-in-out;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .inv-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    /* ===== CARD IMAGES ===== */
+    .inv-img {
+        height: 170px;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .inv-img-placeholder {
+        height: 170px;
+        background: #eef1f6;
+        color: #6c757d;
+        font-size: 1.3rem;
+        border-radius: 12px 12px 0 0;
+    }
+
+    /* ===== CARD TEXT ===== */
+    .inv-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .inv-price {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #198754;
+    }
+
+    /* ===== EDIT BUTTON ===== */
+    .inv-edit-btn {
+        border-radius: 50px;
+        padding: 6px 14px;
+        transition: 0.2s;
+    }
+
+    .inv-edit-btn:hover {
+        opacity: 0.9;
+        transform: scale(1.03);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        background: #fff4cd;
+        border: 1px solid #ffe9a5;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        margin-top: 20px;
+    }
+</style>
