@@ -1,0 +1,52 @@
+@page
+@model InventoryRazorApp.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Inventory Dashboard";
+}
+
+<h1>Inventory Dashboard</h1>
+<p class="lead">View items categorized for a quick overview.</p>
+<hr />
+
+@if (Model.GroupedItems.Count == 0)
+{
+    <div class="alert alert-warning" role="alert">
+        No items found in the inventory. Please add some items first!
+        <a asp-page="Create" class="alert-link">Add New Item</a>
+    </div>
+}
+else
+{
+    @foreach (var categoryGroup in Model.GroupedItems.OrderBy(g => g.Key))
+    {
+        <h3 class="mt-4 mb-3 text-primary">@categoryGroup.Key (@categoryGroup.Value.Count items)</h3>
+        <div class="row mb-5">
+            @foreach (var item in categoryGroup.Value.OrderBy(i => i.Name))
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrEmpty(item.PhotoPath))
+                        {
+                            <img src="@item.PhotoPath" class="card-img-top" alt="@item.Name" style="height: 150px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top text-center bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <span>🖼️ No Photo</span>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text text-success fw-bold fs-5">$@item.Price</p>
+                            <p class="card-text"><small class="text-muted">ID: #@item.Id</small></p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info w-100">Edit Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <hr />
+    }
+}

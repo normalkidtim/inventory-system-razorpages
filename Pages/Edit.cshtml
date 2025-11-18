@@ -1,17 +1,21 @@
 @page
-@model InventoryRazorApp.Pages.CreateModel
+@model InventoryRazorApp.Pages.EditModel
+
 @{
-    ViewData["Title"] = "Add New Item";
+    ViewData["Title"] = "Edit Item";
 }
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
-        <h2>Add New Inventory Item</h2>
+        <h2>Edit Inventory Item</h2>
         <hr />
         
         <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
+            <input type="hidden" asp-for="Item.Id" />
+            <input type="hidden" asp-for="OldPhotoPath" />
+
             <div class="mb-3">
                 <label asp-for="Item.Name" class="form-label"></label>
                 <input asp-for="Item.Name" class="form-control" />
@@ -30,14 +34,22 @@
                 <span asp-validation-for="Item.Category" class="text-danger"></span>
             </div>
 
+            @if (!string.IsNullOrEmpty(Model.Item.PhotoPath))
+            {
+                <div class="mb-3">
+                    <label class="form-label">Current Photo:</label><br />
+                    <img src="@Model.Item.PhotoPath" alt="Current Photo" style="width: 100px; height: 100px; object-fit: cover;" />
+                </div>
+            }
+
             <div class="mb-3">
-                <label asp-for="Item.PhotoFile" class="form-label">Item Photo</label>
+                <label asp-for="Item.PhotoFile" class="form-label">Upload New Photo (Optional)</label>
                 <input asp-for="Item.PhotoFile" class="form-control" type="file" />
                 <span asp-validation-for="Item.PhotoFile" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">➕ Add Item</button>
-            <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+            <button type="submit" class="btn btn-success">💾 Save Changes</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

@@ -1,24 +1,34 @@
 using Microsoft.EntityFrameworkCore;
 using InventoryRazorApp.Models;
+using Microsoft.AspNetCore.Identity; 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options => 
+{
+    // Authorization: Requires a logged-in user for all core inventory pages
+    options.Conventions.AuthorizePage("/Index");
+    options.Conventions.AuthorizePage("/Dashboard");
+    options.Conventions.AuthorizePage("/Create");
+    options.Conventions.AuthorizePage("/Edit");
+    options.Conventions.AuthorizePage("/Delete");
+});
 
 // --- 1. Configure SQLite Database Connection ---
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// --- 2. Configure ASP.NET Identity ---
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AppDbContext>();
+
 var app = builder.Build();
 
-// --- 2. Configure File Uploads (wwwroot/images) ---
-// This allows the application to serve files from the 'wwwroot' folder, 
-// which is where we will save our item images.
+// --- 3. Configure Middleware ---
 app.UseStaticFiles();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -27,14 +37,18 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+// REQUIRED: Authentication must be placed before Authorization
+app.UseAuthentication(); 
 app.UseAuthorization();
+
 app.MapRazorPages();
 
-// --- 3. Initialize Database on Startup ---
+// --- 4. Initialize Database on Startup ---
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate(); // Ensures the database file and table are created
+    dbContext.Database.Migrate(); 
 }
 
 app.Run();
