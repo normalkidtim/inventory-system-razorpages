@@ -1,0 +1,37 @@
+################################################################################
+# C# and .NET related files to ignore
+################################################################################
+
+# Build and log files
+[Bb]in/
+[Oo]bj/
+*.log
+*.vspscc
+*.vssscc
+
+# Rider IDE files (if you use it)
+.idea/
+
+# Visual Studio files
+*.user
+*.suo
+*.sln.docstates
+*.vshost.*
+
+# NuGet packages directory
+packages/
+*.nupkg
+
+# Temporary files
+Temp/
+tmp/
+
+################################################################################
+# Application-Specific Files to Ignore
+################################################################################
+
+# Database file created by SQLite/EF Core
+inventory.db
+*.sqlite
+*.db-shm
+*.db-wal

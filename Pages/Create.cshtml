@@ -1,0 +1,49 @@
+@page
+@model InventoryRazorApp.Pages.CreateModel
+@{
+    ViewData["Title"] = "Add New Item";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Add New Inventory Item</h2>
+        <hr />
+        
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Item.Name" class="form-label"></label>
+                <input asp-for="Item.Name" class="form-control" />
+                <span asp-validation-for="Item.Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Item.Price" class="form-label"></label>
+                <input asp-for="Item.Price" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Item.Price" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Item.Category" class="form-label"></label>
+                <input asp-for="Item.Category" class="form-control" />
+                <span asp-validation-for="Item.Category" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Item.PhotoFile" class="form-label">Item Photo</label>
+                <input asp-for="Item.PhotoFile" class="form-control" type="file" />
+                <span asp-validation-for="Item.PhotoFile" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">➕ Add Item</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        // This enables client-side validation using the required attributes in Item.cs
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
